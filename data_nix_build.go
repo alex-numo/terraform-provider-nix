@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/andrewchambers/terraform-provider-nix/nix"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func dataSourceNixBuild() *schema.Resource {

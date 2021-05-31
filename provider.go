@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // Provider creates the root nix terraform provider.
@@ -21,7 +21,7 @@ func Provider() *schema.Provider {
 }
 
 func randomID() string {
-	b := make([]byte, 32, 32)
+	b := make([]byte, 32)
 	_, err := rand.Read(b)
 	if err != nil {
 		panic(err)

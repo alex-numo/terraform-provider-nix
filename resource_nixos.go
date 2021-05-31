@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/andrewchambers/terraform-provider-nix/nix"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // A nixos server somewhere in the ether.
@@ -276,7 +276,10 @@ func resourceNixOSCustomizeDiff(d *schema.ResourceDiff, m interface{}) error {
 	// A trick to prevent prematurely writing nix expressions to disks path
 	// when this is the first diff.
 	if d.HasChange("nixos_config") {
-		d.SetNewComputed("nixos_system")
+		err := d.SetNewComputed("nixos_system")
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 
@@ -289,12 +292,18 @@ func resourceNixOSCustomizeDiff(d *schema.ResourceDiff, m interface{}) error {
 	if err != nil {
 		log.Printf("build failed, assuming this is because of generated configs. err=%s", err.Error())
 		// If this really is an error, it will be picked up by the switch command.
-		d.SetNewComputed("nixos_system")
+		err := d.SetNewComputed("nixos_system")
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 
 	if d.Get("nixos_system").(string) != desiredSystem {
-		d.SetNewComputed("nixos_system")
+		err := d.SetNewComputed("nixos_system")
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

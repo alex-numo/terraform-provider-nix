@@ -1,7 +1,10 @@
 terraform-provider-nix
+terraform-provider-nix_*
 example/.terraform
 example/terraform.tfstate
 example/terraform.tfstate.backup
 example/pinned_nixpkgs
 example/nixosimage
 example/*-generated.nix
+**/.terraform.lock.hcl
+**/.terraformrc

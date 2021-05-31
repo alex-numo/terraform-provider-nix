@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/andrewchambers/terraform-provider-nix/nix"
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 // A NixBuild server somewhere in the ether.
@@ -217,7 +217,10 @@ func resourceNixBuildCustomizeDiff(d *schema.ResourceDiff, m interface{}) error 
 	// A trick to prevent prematurely writing nix expressions to disks path
 	// when this is the first diff.
 	if d.HasChange("expression") {
-		d.SetNewComputed("store_path")
+		err := d.SetNewComputed("store_path")
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 
@@ -229,10 +232,16 @@ func resourceNixBuildCustomizeDiff(d *schema.ResourceDiff, m interface{}) error 
 	desiredBuild, err := cfg.DoBuildNoLink()
 	if err != nil {
 		log.Printf("build failed, assuming this is because of generated expression. err=%s", err.Error())
-		d.SetNewComputed("store_path")
+		err := d.SetNewComputed("store_path")
+		if err != nil {
+			return err
+		}
 	} else {
 		if d.Get("store_path").(string) != desiredBuild {
-			d.SetNewComputed("store_path")
+			err := d.SetNewComputed("store_path")
+			if err != nil {
+				return err
+			}
 		}
 	}
 
